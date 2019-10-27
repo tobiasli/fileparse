@@ -12,9 +12,7 @@ SIMPLE_TEXT = """This is a test.
 ¤ this is not
 fin"""
 
-NESTED_TEXT = """
-
-# This is a title.
+NESTED_TEXT = """# This is a title.
 This is contents.
 And some more.
 
@@ -23,7 +21,6 @@ with subtitle contents.
 
 # This is another title.
 With some contents.
-
 """
 
 
