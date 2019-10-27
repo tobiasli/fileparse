@@ -9,7 +9,7 @@ setuptools.setup(name='fileparse-tobiasli',
                  author='Tobias Litherland',
                  author_email='tobiaslland@gmail.com',
                  url='https://github.com/tobiasli/fileparse',
-                 packages=setuptools.find_packages(),
+                 packages=['fileparse'],
                  long_description=long_description,
                  long_description_content_type="text/markdown",
                  classifiers=[
@@ -17,5 +17,4 @@ setuptools.setup(name='fileparse-tobiasli',
                      "License :: OSI Approved :: MIT License",
                      "Operating System :: OS Independent",
                  ],
-                 install_requires=['pytest']
                  )
