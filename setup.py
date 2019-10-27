@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(name='fileparse-tobiasli',
                  version='1.0.2',
-                 description='Package for converting string timestamps into datetimes.',
+                 description='Tools for parsing text content and creating data models for the content found.',
                  author='Tobias Litherland',
                  author_email='tobiaslland@gmail.com',
                  url='https://github.com/tobiasli/fileparse',
