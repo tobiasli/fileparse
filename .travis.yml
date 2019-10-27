@@ -1,0 +1,25 @@
+language: python
+dist: xenial
+sudo: false
+python:
+- '3.6'
+- '3.7'
+before_install:
+- export PYTHONPATH=$PYTHONPATH:$(pwd)
+install:
+- pip install python-coveralls
+- pip install pytest
+- pip install pytest-cov
+- pip install .
+script:
+- pytest --cov=fileparse fileparse
+after_success:
+- coveralls
+deploy:
+  provider: pypi
+  user: __token__
+  password:
+    secure: [my_token_here]
+  on:
+    branch: master
+  skip_existing: true
