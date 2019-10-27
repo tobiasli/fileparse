@@ -3,10 +3,12 @@ import typing as ty
 import re
 import logging
 
-from parsing.readers import TextStream
+from fileparse.readers import TextStream
+
 
 class ParsingError(Exception):
     pass
+
 
 class Content:
     contents: ty.List['Content'] = None

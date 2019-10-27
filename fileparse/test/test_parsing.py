@@ -2,8 +2,8 @@
 import re
 import os
 
-import parsing.parsing as model
-import parsing.readers as readers
+import fileparse.parsing as model
+import fileparse.readers as readers
 
 FILENAME = os.path.join(os.path.split(__file__)[0], 'bin', 'context.md')
 
