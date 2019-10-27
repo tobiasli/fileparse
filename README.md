@@ -33,27 +33,26 @@ You can then define some simple classes defining this content structure and patt
 ```python
 import re
 
-import fileparse.parsing as model
-import fileparse.readers as readers
+from fileparse import parse, read
 
-class Text(model.Content):
+class Text(parse.Content):
     pass
 text_match = re.compile('^(?P<text>[^#].+)$')
-text_finder = model.ContentFinder(start_pattern=text_match,
+text_finder = parse.ContentFinder(start_pattern=text_match,
                                   content_type=Text)
 
-class SubTitle(model.Content):
+class SubTitle(parse.Content):
     pass
 subtitle_match = re.compile('^## ?(?P<subtitle>[^#].+)$')
-subtitle_finder = model.ContentFinder(start_pattern=subtitle_match,
+subtitle_finder = parse.ContentFinder(start_pattern=subtitle_match,
                                   content_type=SubTitle,
                                   sub_content_finders=[text_finder]
                                   )
                                   
-class Title(model.Content):
+class Title(parse.Content):
     pass
 title_match = re.compile('^# ?(?P<title>[^#].+)$')
-title_finder = model.ContentFinder(start_pattern=title_match,
+title_finder = parse.ContentFinder(start_pattern=title_match,
                                content_type=Title,
                                sub_content_finders=[subtitle_finder, text_finder])                                      
 ```
@@ -64,7 +63,7 @@ Notice two things:
 Finally, we define the Parser.
 
 ````python
- file_finder = model.Parser(finders=[title_finder])   
+ file_finder = parse.Parser(finders=[title_finder])   
 ````
 
 The file_finder is now ready to parse text content.
@@ -72,7 +71,7 @@ The file_finder is now ready to parse text content.
 For this specific content, we need a text stream able to parse a string. We define it like this:
 
 ````python
-stream = readers.TextStream(reader=readers.StringReader(string=nested_text))
+stream = read.TextStream(reader=read.StringReader(string=nested_text))
 ````
 
 We can now parse the text with the rules defined in file_finder, and se what comes out of it. To get information out of a file-object, use the `file.get_contents_by_type(content_type)` method.

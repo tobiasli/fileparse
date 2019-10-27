@@ -3,7 +3,7 @@ import typing as ty
 import re
 import logging
 
-from fileparse.readers import TextStream
+from fileparse.read import TextStream
 
 
 class ParsingError(Exception):

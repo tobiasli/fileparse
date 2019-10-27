@@ -2,8 +2,7 @@
 import re
 import os
 
-import fileparse.parsing as model
-import fileparse.readers as readers
+from fileparse import parse, read
 
 FILENAME = os.path.join(os.path.split(__file__)[0], 'bin', 'context.md')
 
@@ -25,7 +24,7 @@ With some contents.
 
 
 def test_text_stream_previous():
-    stream = readers.TextStream(reader=readers.StringReader(string=SIMPLE_TEXT))
+    stream = read.TextStream(reader=read.StringReader(string=SIMPLE_TEXT))
 
     assert stream.get_line() == 'This is a test.'
     assert stream.get_line() == '# this is content'
@@ -36,7 +35,7 @@ def test_text_stream_previous():
 
 
 def test_text_stream_backtrack():
-    stream = readers.TextStream(reader=readers.StringReader(string=SIMPLE_TEXT))
+    stream = read.TextStream(reader=read.StringReader(string=SIMPLE_TEXT))
 
     assert stream.get_line() == 'This is a test.'
     assert stream.get_line() == '# this is content'
@@ -54,16 +53,16 @@ def test_file_reader():
     # with codecs.open(FILENAME) as file:
     #     for line in file.readlines():
     #         print(line)
-    stream = readers.TextStream(reader=readers.FileReader(filepath=FILENAME, encoding='utf-8'))
+    stream = read.TextStream(reader=read.FileReader(filepath=FILENAME, encoding='utf-8'))
     line = ''
     while line is not None:
         line = stream.get_line()
 
 
 def test_content_finder_simple():
-    stream = readers.TextStream(reader=readers.StringReader(string=SIMPLE_TEXT))
+    stream = read.TextStream(reader=read.StringReader(string=SIMPLE_TEXT))
 
-    c = model.ContentFinder(start_pattern=re.compile('^#(?P<stuff>.+)$'),
+    c = parse.ContentFinder(start_pattern=re.compile('^#(?P<stuff>.+)$'),
                             end_pattern=re.compile('^¤'))
 
     content = c.search_stream(stream)
@@ -72,44 +71,36 @@ def test_content_finder_simple():
 
 
 def test_content_finder_nested():
-    class Text(model.Content):
+    class Text(parse.Content):
         pass
 
-    class Title(model.Content):
+    class Title(parse.Content):
         pass
 
-    class SubTitle(model.Content):
+    class SubTitle(parse.Content):
         pass
 
     text_match = re.compile('^(?P<text>[^#].+)$')
     title_match = re.compile('^# ?(?P<title>[^#].+)$')
     subtitle_match = re.compile('^## ?(?P<subtitle>[^#].+)$')
-    stream = readers.TextStream(reader=readers.StringReader(string=NESTED_TEXT))
+    stream = read.TextStream(reader=read.StringReader(string=NESTED_TEXT))
 
-    text_finder = model.ContentFinder(start_pattern=text_match,
+    text_finder = parse.ContentFinder(start_pattern=text_match,
                                       content_type=Text)
-    subtitle_finder = model.ContentFinder(start_pattern=subtitle_match,
+    subtitle_finder = parse.ContentFinder(start_pattern=subtitle_match,
                                           content_type=SubTitle,
                                           sub_content_finders=[text_finder]
                                           )
-    title_finder = model.ContentFinder(start_pattern=title_match,
+    title_finder = parse.ContentFinder(start_pattern=title_match,
                                        content_type=Title,
                                        sub_content_finders=[subtitle_finder, text_finder])
 
-    file_finder = model.Parser(finders=[title_finder])
+    file_finder = parse.Parser(finders=[title_finder])
 
     file = file_finder.parse_stream(stream)
     # TODO: Figure out why i can't find subtitles.
     assert file.get_contents_by_type(SubTitle)[0].subtitle == 'This is a subtitle.'
     assert file.get_contents_by_type(SubTitle)[0].contents[0].text == 'with subtitle contents.'
-
-
-def test_content_finder_integration():
-    """Test using the actual format of the old entries."""
-    path = os.path.split(__file__)[0]
-    file = os.path.join(path, 'bin', 'context.md')
-
-    reader = readers.FileReader(filepath=file, encoding='utf-8')
 
 
 
