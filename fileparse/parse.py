@@ -84,14 +84,14 @@ class ContentFinder:
                 else:
                     if self.end_pattern and any(end_pattern.match(line) for end_pattern in end_patterns):
                         # We are done here!
-                        print(f'{self.content_type}:{self.end_pattern.pattern}: Stop at end_pattern.')
+                        # print(f'{self.content_type}:{self.end_pattern.pattern}: Stop at end_pattern.')
                         break
                     elif stop_at_new_start and self.start_pattern.match(line):
                         # Assumes that reaching a start_pattern again means end of current ant start of book.
                         # So we are done here, and need to parse current line again.
                         # Only works if no end-pattern is set.
                         stream.backtrack_reader_number_of_lines(1)
-                        print(f'{self.content_type}:{self.start_pattern.pattern}: Stop at book start.')
+                        # print(f'{self.content_type}:{self.start_pattern.pattern}: Stop at book start.')
                         break
                     elif self.sub_content_finders:  # We now go looking for sub_content.
                         for sub in self.sub_content_finders:
